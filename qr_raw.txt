@@ -1,0 +1,74 @@
+PK23MUCB1469257021004229
+
+
+
+python -m http.server 8080
+
+https://localhost:4443/sqr.html
+
+PK21MUCB1220004201008526
+AL NOOR BOOK CENTER
+Lahore
+5942
+
+PK23MUCB1469257021004229
+0002020102110202000424PK23MUCB14692570210042291004D8EE
+
+
+			var sessionValue = sessionStorage.getItem('meResponse');
+			var targetWindow = window.open('http://localhost:8080/sqr.html');
+			targetWindow.postMessage(sessionValue, 'http://localhost:8080/sqr.html');
+
+
+        	var sessionValue = sessionStorage.getItem('meResponse');
+			var targetWindow = window.open('http://localhost:8080/sqr.html');
+			//targetWindow.postMessage(sessionValue, 'http://localhost:8080');
+
+        targetWindow.onload = function() {
+    targetWindow.postMessage(sessionValue, 'http://localhost:8080');  // Correct origin
+};
+
+Lahore
+Lahore
+Karachi
+Karachi
+Karachi
+Lahore
+Karachi
+
+
+                <!--<option value="Islamabad">Islamabad</option>
+                <option value="Karachi">Karachi</option>
+                <option value="Lahore">Lahore</option>
+                <option value="Peshawar">Peshawar</option>
+                <option value="Faisalabad">Faisalabad</option>
+                <option value="Rawalpindi">Rawalpindi</option>
+                <option value="Sukkur">Sukkur</option>
+                <option value="Multan">Multan</option>-->
+                <!-- Add more cities as needed -->
+
+
+Farrukhshah1,Zahidyousaf1
+Iftiahmedmotiwala
+Rashidhero20001
+Mannanbhatti110
+Maliarshad
+hinahameed1
+faizan11988
+Ranasameer1
+Umairsaedi
+MImranAshraf1975
+Myasir83
+03116829412
+Mimtiaz1979
+Anwar109
+
+PK80MUCB1560717691006051 
+
+00020101021128790032fbbc759357a74082b958cd613e75f20b0111MUCBPKKKRTG0224PK27MUCB15042643710001885204531153035865802PK5919ZAM ZAM SUPER STORE6006Lahore6304B579
+000201010211287900328242bdcc89244be28e4a5e46857005600111MUCBPKKKRTG0224PK03MUCB05414788110006115204591253035865802PK5917SOHAIL DRUG HOUSE6007Sialkot6304DD2C
+000201010211287900328e907ef81cf84aa68438d8abe568425c0111MUCBPKKKRTG0224PK68MUCB06045531910010725204722153035865802PK5912HINA STUDIO 6007Sialkot63046695
+00020101021128790032d567b6b3dbfb41eeb7b449a984d7ff650111MUCBPKKKRTG0224PK36MUCB15698575710192295204563153035865802PK5920FANCY SILK EMPORIUM 6006Lahore630484F2
+00020101021128790032ddc2076e98b240e0b1a26a72219045bf0111MUCBPKKKRTG0224PK14MUCB06241976810057385204481253035865802PK5918HAIDER ENTERPRISES6009Wazirabad6304E07D
+00020101021128790032a769a8f4280147e09787278ce7ace9210111MUCBPKKKRTG0224PK77MUCB08365064610080625204591253035865802PK5920MUGHAL MEDICAL STORE6010Gujranwala63048131
+00020101021128790032b93353b0f41a496abf5e5d0911c9b83e0111MUCBPKKKRTG0224PK06MUCB05403519810061555204591253035865802PK5931IMPERIAL MEDICAL & GENRAL STORE6009Hyderabad6304728E

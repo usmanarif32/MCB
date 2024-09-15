@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQR Code Generator MCB</title>
+	<link rel="icon" href="images/mcb.png" type="image/x-icon">
+	<link rel="stylesheet" href="css/styles.css">
+    <script src="scripts/easy.qrcode.min.js"></script>
+	<script src="scripts/script.js"></script>
+</head>
+<body>
+
+	<div class="container">
+	<h1>MCB Merchants QR</h1>
+		<iframe src="prodMerchantsQR/prodMerchantsQR.html" width="600" height="400" title="Embedded Page"></iframe>
+	</div>
+
+    <div class="container">
+        <h2>Input QR String Parameters</h2>
+        
+        <form id="qrForm">
+            <label for="merchantName">Merchant Name (Tag 59):</label>
+            <input type="text" id="merchantName" placeholder="e.g., BEST TRANSPORT" required>
+            
+            <label for="merchantCity">Merchant City (Tag 60):</label>
+            <select id="merchantCity">
+            </select>
+            
+            <label for="merchantCategoryCode">Merchant Category Code (Tag 52):</label>
+            <input type="text" id="merchantCategoryCode" placeholder="e.g., 4111" required>
+            
+            <label for="accountNumber">IBAN (24 digits):</label>
+            <input type="text" id="accountNumber" placeholder="e.g., PKXXMUCBXXXXXXXXXXXXXXXX" maxlength="24" required>
+            <button type="button" onclick="generateQR()">Generate QR Code</button>
+        </form>
+        
+        <div id="output" style="margin-top: 20px; display:none;"></div>
+        <h3>Generated QR String:</h3>
+        <div id="qrStringOutput" style="word-break: break-all; background: #f1f1f1; padding: 10px; border-radius: 5px;"></div>
+        <div id="qrcode"></div>
+		</br>
+        <a id="downloadButton" download="qrcode.png">Download QR Code</a>
+    </div>
+	
+	<div class="container">
+        <h2>Input QR String</h2>
+		<textarea  id="qrStringInput" style="word-break: break-all; background: #f1f1f1; padding: 10px; border-radius: 5px;" placeholder="e.g. 0002010102112879003272bb51b4f4794d9fb6bd7125e4dc1eb60111MUCBPKKKRTG0224PK21MUCB12200042010085265204594253035865802PK5919AL NOOR BOOK CENTER6006Lahore63041246" required></textarea >
+		<button type="button" onclick="generateQRFromString()">Generate QR Code</button>
+		</br>
+		<div id="qrcodeFromString"></div>
+		</br>
+		<a id="downloadQRFromString" download="qrcodefs.png">Download QR Code</a>
+	</div
+
+   </body>
+</html>
