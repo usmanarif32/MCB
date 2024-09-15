@@ -264,7 +264,8 @@
             var password = document.getElementById("password").value;
 			
             // Simple validation (in real scenarios, you would check this against a server-side database)
-            if (username === "crediverse-analytics@concurrent.systems" && password === "er1c$$on") {
+            //if (username === "crediverse-analytics@concurrent.systems" && password === "er1c$$on") {
+	    if (username === "usman" && password === "usman") { 
                 document.getElementById("loginForm").style.display = "none";
                 document.getElementById("qrFormContainer").style.display = "block";
             } else {
