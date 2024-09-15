@@ -260,111 +260,18 @@
 
 
         function login() {
-			
-			alert ("Hello");
-			
-			var sessionValue = sessionStorage.getItem('meResponse');
-			alert("sessionValue " + sessionValue);
-		
-			console.log("me Response " + sessionStorage.getItem('meResponse'));
             var username = document.getElementById("username").value;
             var password = document.getElementById("password").value;
 			
-			debugger;
-			
-			var _vid_t = localStorage.getItem('_vid_t');
-			var _vid_lr = localStorage.getItem('_vid_lr');
-			
-			debugger;
-			
-			//var sessionValue = sessionStorage.getItem('meResponse');
-
-			// Open the target domain (or get the reference to the window)
-			//const targetWindow = window.open('http://localhost:8080/sqr.html');
-
-			// Send the session storage data to the target window
-			//targetWindow.postMessage(sessionValue, 'http://localhost:8080/sqr.html');
-			
-			
-			/*
-			window.open('https://mcblive.com', 'http://localhost:8080/sqr.html');
-			targetWindow.postMessage(sessionValue, 'https://target-domain.com');
-						
-			window.addEventListener('load', () => {
-				const targetWindow = window.open('http://localhost:8080/sqr.html');
-				targetWindow.postMessage('Hello from another tab', 'http://localhost:8080/sqr.html');
-			});
-			
-			
-			window.addEventListener('message', (event) => {
-				if (event.origin === 'http://localhost:8080/sqr.html') {
-					console.log(event.data);  // Output the message from the other tab
-				}
-			});
-			*/
-
-			//const meResponse = sessionStorage.getItem('meResponse');
-
             // Simple validation (in real scenarios, you would check this against a server-side database)
-            /*if (username === "crediverse-analytics@concurrent.systems" && password === "er1c$$on") {
+            if (username === "crediverse-analytics@concurrent.systems" && password === "er1c$$on") {
                 document.getElementById("loginForm").style.display = "none";
                 document.getElementById("qrFormContainer").style.display = "block";
             } else {
                 alert("Invalid credentials. Please try again.");
-            }*/
-			debugger;
-			var JSESSIONID = getCookieValueByName('JSESSIONID');
-			if (JSESSIONID)
-			{
-				console.log("JSESSIONID " + JSESSIONID);
-			}
-			else
-			{
-				alert("Invalid credentials. Please try again.");
-			}
+            }
         }
 		
-		function getCookieValueByName(name) {
-			const cookies = document.cookie.split('; ');
-			for (let i = 0; i < cookies.length; i++) {
-				const cookiePair = cookies[i].split('=');
-				if (cookiePair[0] === name) {
-					return decodeURIComponent(cookiePair[1]);
-				}
-			}
-			
-		chrome.cookies.getAll({ url: "https://mcblive.com/" }, function (cookies) {
-			for (let i = 0; i < cookies.length; i++) {
-				debugger;
-				console.log(cookies[i].name + ": " + cookies[i].value);
-			}
-			});
-			
-			return null;
-		}
-		
-	chrome.cookies.getAll({ url: "https://mcblive.com/" }, function (cookies) {
-		for (let i = 0; i < cookies.length; i++) {
-			debugger;
-			console.log(cookies[i].name + ": " + cookies[i].value);
-		}
-	});
 
-
-	window.addEventListener('message', function(event) {
-		aler("Accessed");
-		// Check the origin of the message to ensure it's from a trusted source
-		if (event.origin === 'http://localhost:8080') {
-			// Access the data sent by the source window
-			const receivedSessionData = event.data;
-			console.log('Received session data:', receivedSessionData);
-			alert( "receivedSessionData " + receivedSessionData);
-
-			// Now you can use the received session data in this window/tab
-		} else {
-			alert('Untrusted message origin');
-			console.log('Untrusted message origin');
-		}
-	});
 		
 
