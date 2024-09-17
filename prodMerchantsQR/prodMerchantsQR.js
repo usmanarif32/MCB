@@ -100,11 +100,12 @@ const MERCHANTS_STATIC_QR_STRING_GLB = [];
         }
 
         function downloadQRs() {
-            const qrCodes = document.querySelectorAll('[id^=qrcode]');
+            const qrCodes = document.querySelectorAll('[id^=qrcode]:not([style*="display: none"])');
             qrCodes.forEach((qrCodeDiv, index) => {
                 let canvas = qrCodeDiv.querySelector('canvas');
-				let merchantNameLength = MERCHANTS_STATIC_QR_STRING_GLB[index].trim().substring(118,120);
-				let merchantName = MERCHANTS_STATIC_QR_STRING_GLB[index].trim().substring(120,120 + parseInt(merchantNameLength));
+				//let merchantNameLength = MERCHANTS_STATIC_QR_STRING_GLB[index].trim().substring(118,120);
+				//let merchantName = MERCHANTS_STATIC_QR_STRING_GLB[index].trim().substring(120,120 + parseInt(merchantNameLength));
+				let merchantName = qrCodeDiv.id.split("_")[1];
                 if (canvas) {
                     let dataURL = getCanvasDataURL(canvas);
 					setTimeout(
@@ -167,7 +168,7 @@ const MERCHANTS_STATIC_QR_STRING_GLB = [];
 
 								let index = i + 1;
 								let qrCodeDiv = document.createElement('div');
-								qrCodeDiv.id = 'qrcode' + index;
+								qrCodeDiv.id = 'qrcode' + index + '_' + merchantName;
 								qrCodeDiv.crossorigin="anonymous";
 								new QRCode(qrCodeDiv, options);
 
@@ -185,4 +186,82 @@ const MERCHANTS_STATIC_QR_STRING_GLB = [];
 			const rows = text.split('\n').map(row => row.trim()).filter(row => row.length > 0);
 			return rows.map(row => row.split('\n'));
 		}
-		
+	
+	function search()
+	{
+		var businessName = document.getElementById("businessName").value.toUpperCase();
+		if(businessName.length >= 4)
+		{
+		 // Get all div elements on the page
+         var rootDiv = document.getElementById("root");
+		 var divs = rootDiv.getElementsByTagName("div");
+
+            // Loop through all divs and compare their id with the user input
+            for (var i = 0; i < divs.length; i++) {
+				var div = divs[i];
+                // If the div id matches the user input, show it, otherwise hide it
+                if (div.id.includes(businessName)) {
+                    div.style.display = "";  // Show div
+                } else {
+                    div.style.display = "none";  // Hide div
+                }
+            }
+		}
+	}
+	
+	function searchByCity()
+	{
+		var merchantCity = document.getElementById("merchantCity").value;
+		if(merchantCity != "Search by city")
+		{
+		 // Get all div elements on the page
+         var rootDiv = document.getElementById("root");
+		 var divs = rootDiv.getElementsByTagName("div");
+
+            // Loop through all divs and compare their id with the user input
+            for (var i = 0; i < divs.length; i++) {
+				var div = divs[i];
+                // If the div id matches the user input, show it, otherwise hide it
+                if (div.title.includes(merchantCity)) {
+                    div.style.display = "";  // Show div
+                } else {
+                    div.style.display = "none";  // Hide div
+                }
+            }
+		}
+	}
+	
+	function searchByAcctNoIBAN()
+	{
+		var acctNoIBAN = document.getElementById("acctNoIBAN").value;
+		if(acctNoIBAN.length >= 14)
+		{
+		 // Get all div elements on the page
+         var rootDiv = document.getElementById("root");
+		 var divs = rootDiv.getElementsByTagName("div");
+
+            // Loop through all divs and compare their id with the user input
+            for (var i = 0; i < divs.length; i++) {
+				var div = divs[i];
+                // If the div id matches the user input, show it, otherwise hide it
+                if (div.title.includes(acctNoIBAN)) {
+                    div.style.display = "";  // Show div
+                } else {
+                    div.style.display = "none";  // Hide div
+                }
+            }
+		}
+	}
+	
+	function clearSearch()
+	{
+		document.getElementById("businessName").value = "";
+		document.getElementById("acctNoIBAN").value   = "";
+		document.getElementById("merchantCity").selectedIndex  = 0;
+         var rootDiv = document.getElementById("root");
+		 var divs = rootDiv.getElementsByTagName("div");
+            // Loop through all divs and set their display to visible
+            for (var i = 0; i < divs.length; i++) {
+                divs[i].style.display = "";  // Show all divs
+            }
+	}
