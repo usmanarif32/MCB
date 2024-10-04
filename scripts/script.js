@@ -2,9 +2,21 @@
             var merchantName = document.getElementById("merchantName").value;
             var merchantCity = document.getElementById("merchantCity").value;
             var merchantCategoryCode = document.getElementById("merchantCategoryCode").value;
-            var accountNumber = document.getElementById("accountNumber").value;
+            var accountNumber = document.getElementById("accountNumber").value.trim();
 			var merchantNameLength = merchantName.length;
 			var merchantCityLength = merchantCity.length;
+			
+			if (accountNumber.length != 24 && accountNumber.length == 16)
+			{
+				var MCB_SWIFT = 'MUCB'
+				var PK = 'PK00'
+				var check_sum_digit = ChecksumIBAN( PK + MCB_SWIFT + accountNumber);
+				//if ( validateIBAN( 'PK' + check_sum_digit + MCB_SWIFT + IBAN) )
+					accountNumber = "PK"+check_sum_digit+ MCB_SWIFT +accountNumber;
+			}
+			
+			if ( validateIBAN (accountNumber) && merchantCategoryCode.length==4 && merchantNameLength >0)
+			{
 			
 			if( merchantNameLength < 10)
 				merchantNameLength = '0' + merchantNameLength;
@@ -62,7 +74,7 @@
                 quietZoneColor: 'transparent',
                 subTitleFont: 12,
                 text: qrStringWithCRC.trim(),
-				title: merchantName + " - " + accountNumber,
+				title: merchantName + " - " + accountNumber.substr(accountNumber.length - 4),
                 titleBackgroundColor: "white",
                 titleColor: "#000000",
                 titleFont: 18,
@@ -87,8 +99,102 @@
                 downloadButton.href = qrImage;
                 downloadButton.style.display = 'inline-block'; // Show the download button
             }, 300);  // Delay to ensure the QR code is generated
-        }
+		}
+    }
+		
+		function ChecksumIBAN(iban)
+		{
+			  var code     = iban.substring(0, 2);
+			  var checksum = iban.substring(2, 4);
+			  var bban     = iban.substring(4);
 
+			  // Assemble digit string
+			  var digits = "";
+			  for (var i = 0; i < bban.length; ++i)
+			  {
+				var ch = bban.charAt(i).toUpperCase();
+				if ("0" <= ch && ch <= "9")
+				  digits += ch;
+				else
+				  digits += capital2digits(ch);
+			  }
+			  for (var i = 0; i < code.length; ++i)
+			  {
+				var ch = code.charAt(i);
+				digits += capital2digits(ch);
+			  }
+			  digits += checksum;
+
+			  // Calculate checksum
+			  checksum = 98 - mod97(digits);
+			  //console.log("checksum-digits of IBAN " + checksum)
+			  return fill0("" + checksum, 2);
+		}
+		
+		function capital2digits(ch)
+		{
+		  var capitals = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		  for (var i = 0; i < capitals.length; ++i)
+			if (ch == capitals.charAt(i))
+			  break;
+		  return i + 10;
+		}
+		
+		function mod97(digit_string)
+		{
+			var m = 0;
+			for (var i = 0; i < digit_string.length; ++i)
+			m = (m * 10 + parseInt(digit_string.charAt(i))) % 97;
+			return m;
+		}
+
+		function fill0(s, l)
+		{
+			while (s.length < l)
+			s = "0" + s;
+			return s;
+		}
+		
+		function validateIBAN(iban) {
+			var newIban = iban.toUpperCase(),
+				modulo = function (divident, divisor) {
+					var cDivident = '';
+					var cRest = '';
+
+					for (var i in divident ) {
+						var cChar = divident[i];
+						var cOperator = cRest + '' + cDivident + '' + cChar;
+
+						if ( cOperator < parseInt(divisor) ) {
+								cDivident += '' + cChar;
+						} else {
+								cRest = cOperator % divisor;
+								if ( cRest == 0 ) {
+									cRest = '';
+								}
+								cDivident = '';
+						}
+
+					}
+					cRest += '' + cDivident;
+					if (cRest == '') {
+						cRest = 0;
+					}
+					return cRest;
+				};
+
+			if (newIban.search(/^[A-Z]{2}/gi) < 0) {
+				return false;
+			}
+
+			newIban = newIban.substring(4) + newIban.substring(0, 4);
+
+			newIban = newIban.replace(/[A-Z]/g, function (match) {
+				return match.charCodeAt(0) - 55;
+			});
+
+			return parseInt(modulo(newIban, 97), 10) === 1;
+		}
 		
 		//CRC Used for generating String
 		function GenerateCRC(qrData) {
@@ -156,7 +262,7 @@
                 quietZoneColor: 'transparent',
                 subTitleFont: 12,
                 text: MERCHANT_STATIC_QR_STRING,
-				title: merchantName + " - " + accountNumber,
+				title: merchantName + " - " + accountNumber.substr(accountNumber.length - 4),
                 titleBackgroundColor: "white",
                 titleColor: "#000000",
                 titleFont: 18,
