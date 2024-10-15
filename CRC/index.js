@@ -1,6 +1,8 @@
 import * as BigInteger from './BigInteger.min.js';
 import * as IBAN_LIB_JS from './iban.js';
 import { randomUUID } from 'crypto';
+import fs from 'fs';
+import csv from 'csv-parser';
 
 console.log("CRC!");
 
@@ -242,58 +244,102 @@ var city = "";
 var city_length = "";
 var crc_tag = "6304"
 
-//var qrData = `00020101021128${tag28Length}0032${uetr}0111MUCBPKKKRTG0224${accountNumber}5204${merchantCategoryCode}5303${586}5802${'PK'}59${merchantNameLength}${merchantName}60${merchantCityLength}${merchantCity}${crc_tag}`;
 
-//console.log("MERCHANT_DATA " + 	MERCHANT_DATA.length);
-
-for (let i = 0; i < MERCHANT_DATA.length; i++) {
-	var j = 0;
-	IBAN = MERCHANT_DATA[i][j];
-	//MCC_tag = "5204" + MERCHANT_DATA[i][j+3];
-	merchant_business_name = MERCHANT_DATA[i][j+2];
-	merchant_business_name_lenght = merchant_business_name.length;
-	if(merchant_business_name_lenght < 10)
-		merchant_business_name_lenght = '0' + merchant_business_name_lenght;
-	city = MERCHANT_DATA[i][j+1];
-	city_length = city.length;
-	if ( city_length < 10 )
-		city_length = '0' + city_length;
-	
-	if (IBAN.length != 24)
-	{
-		var MCB_SWIFT = 'MUCB'
-		var PK = 'PK00'
-		var check_sum_digit = ChecksumIBAN( PK + MCB_SWIFT + IBAN);
-		if ( validateIBAN( 'PK' + check_sum_digit + MCB_SWIFT + IBAN) )
-		{		
-				//console.log("check_sum_digit " + check_sum_digit);
+const results = [];
+//fs.createReadStream('qrString.csv')
+fs.createReadStream('data/latest_5_E.csv')
+  .pipe(csv())
+  .on('data', (data) => results.push(data))
+  .on('end', () => {
+	    //console.log(results);
+		
+	for(let i = 0; i < results.length; i++) {
+		let object = results[i];
+		/*console.log(object.Account_Number);
+		console.log(object.City);
+		console.log(object.Business_Name);
+		console.log(object.MCC);*/
+		
+		IBAN  = object.ACCOUNT_NUMBER.trim();
+		merchant_business_name = object.BUSINESS_NAME.trim();
+		merchant_business_name_lenght = merchant_business_name.length;
+		if(merchant_business_name_lenght < 10)
+			merchant_business_name_lenght = '0' + merchant_business_name_lenght;
+		
+		city = object.CITY.trim();
+		city_length = city.length;
+		if ( city_length < 10 )
+			city_length = '0' + city_length;
+		
+		if (IBAN.length != 24)
+		{
+			var MCB_SWIFT = 'MUCB'
+			var PK = 'PK00'
+			var check_sum_digit = ChecksumIBAN( PK + MCB_SWIFT + IBAN);
+			if ( validateIBAN( 'PK' + check_sum_digit + MCB_SWIFT + IBAN) )
+			{
 				IBAN = "PK"+check_sum_digit+ MCB_SWIFT +IBAN;
-				//IBAN = "PK"+check_sum_digit+"SONE"+IBAN;
-				//console.log("IBAN " + IBAN);
+			}
 		}
+	
+		uetr = generateUETR();
+		
+		var MCC_tag_plus_value  = MCC_tag + object.MCC.trim();
+		var QR_STRING = baseString_tag28 + uetr + Bic_Code + IBAN + MCC_tag_plus_value + currency_country + merchant_business_name_lenght + merchant_business_name + city_tag + city_length + city + crc_tag;
+		console.log( GenerateCRC(QR_STRING) );
+		
 	}
 	
-	uetr = generateUETR();
 	
+  });
+  
+  //console.log(results);
+  
+/*  	for(let i = 0; i < results.length; i++) {
+		let object = results[i];
+		console.log(object.Account_Number);
+		console.log(object.City);
+		console.log(object.Business_Name);
+		console.log(object.MCC);
+		
+		IBAN  = object.Account_Number.trim();
+		merchant_business_name = object.Business_Name.trim();
+		merchant_business_name_lenght = merchant_business_name.length;
+		if(merchant_business_name_lenght < 10)
+			merchant_business_name_lenght = '0' + merchant_business_name_lenght;
+		
+		city = object.City.trim();
+		city_length = city.length;
+		if ( city_length < 10 )
+			city_length = '0' + city_length;
+		
+		if (IBAN.length != 24)
+		{
+			var MCB_SWIFT = 'MUCB'
+			var PK = 'PK00'
+			var check_sum_digit = ChecksumIBAN( PK + MCB_SWIFT + IBAN);
+			if ( validateIBAN( 'PK' + check_sum_digit + MCB_SWIFT + IBAN) )
+			{
+				IBAN = "PK"+check_sum_digit+ MCB_SWIFT +IBAN;
+			}
+		}
 	
-	var MCC_tag_plus_value  = MCC_tag +  MERCHANT_DATA[i][j+3];
-	//console.log("IBAN " + 	IBAN);	
-
-	//console.log("merchant_business_name " + 	merchant_business_name_lenght);
-	
-	//console.log("city " + 	city_length);
-
-	//console.log("*******************************\n");
-	var QR_STRING = baseString_tag28 + uetr + Bic_Code + IBAN + MCC_tag_plus_value + currency_country + merchant_business_name_lenght + merchant_business_name + city_tag + city_length + city + crc_tag;
-	console.log( GenerateCRC(QR_STRING) );
-	//console.log( GenerateCRC("0002020102110202000424PK23MUCB14692570210042291004") );
-	//console.log( GenerateCRC("0002020102110202000424PK47SCBL00000011426335011004") );
-	//console.log("+++++++++++++++++++++++++++++++\n");
-}
+		uetr = generateUETR();
+		
+		var MCC_tag_plus_value  = MCC_tag + object.MCC.trim();
+		var QR_STRING = baseString_tag28 + uetr + Bic_Code + IBAN + MCC_tag_plus_value + currency_country + merchant_business_name_lenght + merchant_business_name + city_tag + city_length + city + crc_tag;
+		console.log( GenerateCRC(QR_STRING) );
+		
+	}
+*/
 
 var sQR = "0002010102112879003272bb51b4f4794d9fb6bd7125e4dc1eb60111MUCBPKKKRTG0224PK60MUCB14258018810021685204481253035865802PK5909AL MADINA6009ISLAMABAD6304"
 
-//console.log("RAAST P2M QR_STRING " + 	GenerateCRC(sQR));
+
+function parseCSV(text) {
+			const rows = text.split('\n').map(row => row.trim()).filter(row => row.length > 0);
+			return rows.map(row => row.split('\n'));
+		}
 
 // Check the checksum of an IBAN.
 function IBANokay(iban)
@@ -301,7 +347,7 @@ function IBANokay(iban)
   return ChecksumIBAN(iban) == "97";
 }
 
-	function generateUETR() {
+function generateUETR() {
 		return randomUUID().replace(/-/g, '').substring(0, 32);
 			//return this.crypto.randomUUID().replace(/-/g, '').substring(0, 32);
 		}
