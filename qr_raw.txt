@@ -4,6 +4,20 @@ PK23MUCB1469257021004229
 
 python -m http.server 8080
 
+http://localhost:8080/sqr.html
+
+
+Tim Horton Gulburg
+1122
+PK98MUCB1281814031002965
+
+123456789
+
+28 79 
+00 32 74f0814f9fdd4bddacaab0af754635e5
+01 11 MUCBPKKKRTG
+02 24 PK98MUCB1281814031002965
+
 https://localhost:4443/sqr.html
 
 PK21MUCB1220004201008526
@@ -72,3 +86,60 @@ PK80MUCB1560717691006051
 00020101021128790032ddc2076e98b240e0b1a26a72219045bf0111MUCBPKKKRTG0224PK14MUCB06241976810057385204481253035865802PK5918HAIDER ENTERPRISES6009Wazirabad6304E07D
 00020101021128790032a769a8f4280147e09787278ce7ace9210111MUCBPKKKRTG0224PK77MUCB08365064610080625204591253035865802PK5920MUGHAL MEDICAL STORE6010Gujranwala63048131
 00020101021128790032b93353b0f41a496abf5e5d0911c9b83e0111MUCBPKKKRTG0224PK06MUCB05403519810061555204591253035865802PK5931IMPERIAL MEDICAL & GENRAL STORE6009Hyderabad6304728E
+
+
+		<div class="iban_container">
+			<h2>Generate IBAN</h2>
+			<input type="text" id="accountNumberInput" placeholder="e.g., 123XXXXXXXXXX456" maxlength="16" required>
+			<button type="button" onclick="generateIbanFromAccountNumber()">Generate IBAN</button>
+			</br>
+			</br>
+			<div id="ibanFromAccountNumber" style="word-break: break-all; background: #f1f1f1; padding: 10px; border-radius: 5px;"></div>
+			</br>
+		</div>
+
+		<div class="validate_iban_container">
+			<h2>Validate IBAN</h2>
+			<input type="text" id="ibanInput" placeholder="e.g., PKXXMUCBXXXXXXXXXXXXXXXX" maxlength="24" required>
+			<button type="button" onclick="validateInputIbanNumber()">Validate IBAN</button>
+			</br>
+			</br>
+			<div id="isValidIBAN" style="word-break: break-all; background: #f1f1f1; padding: 10px; border-radius: 5px;"></div>
+			</br>
+		</div>
+
+
+		function generateIbanFromAccountNumber() {
+			var accountNumber = document.getElementById("accountNumberInput").value.trim();
+			
+			if (accountNumber.length != 24 && accountNumber.length == 16 && !isNaN(accountNumber) )
+			{
+				var MCB_SWIFT = 'MUCB'
+				var PK = 'PK00'
+				var check_sum_digit = ChecksumIBAN( PK + MCB_SWIFT + accountNumber);
+				accountNumber = "PK"+check_sum_digit+ MCB_SWIFT +accountNumber;
+				
+				if ( validateIBAN(accountNumber) )
+					document.getElementById("ibanFromAccountNumber").innerHTML = accountNumber;
+				else
+					document.getElementById("ibanFromAccountNumber").innerHTML = "Please enter 16-digits account number";
+					
+			}
+			else
+				document.getElementById("ibanFromAccountNumber").innerHTML = "Please enter 16-digits account number";
+		}
+		
+		function validateInputIbanNumber() {
+			var iban = document.getElementById("ibanInput").value.trim();
+			
+			if ( iban.length == 24 )
+			{	
+				if ( validateIBAN(iban) )
+					document.getElementById("isValidIBAN").innerHTML = "Valid IBAN " + iban;
+				else
+					document.getElementById("isValidIBAN").innerHTML = "Invalid IBAN " + iban;
+					
+			}
+			else
+				document.getElementById("isValidIBAN").innerHTML = "Please enter 24-digits IBAN";
+		}
