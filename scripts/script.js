@@ -3,8 +3,10 @@
             var merchantCity = document.getElementById("merchantCity").value;
             var merchantCategoryCode = document.getElementById("merchantCategoryCode").value;
             var accountNumber = document.getElementById("accountNumber").value.trim();
+			var terminalLabel = document.getElementById("terminalLabel").value.trim();
 			var merchantNameLength = merchantName.length;
 			var merchantCityLength = merchantCity.length;
+			var terminalLabelLength = terminalLabel.length;
 			
 			if (accountNumber.length != 24 && accountNumber.length == 16)
 			{
@@ -28,9 +30,13 @@
             var uetr = generateUETR();
 			var crc_tag = "6304"
 
+			// Reference Label Tag 62, sub-tag 05
+			var tag62Length = 2 + 2 + terminalLabelLength;
+			if( terminalLabelLength < 10)
+				terminalLabelLength = '0' + terminalLabelLength;
             // Create the EMV QR string with the updated tag order
             var tag28Length = 2 + 2 + 32 + 2 + 2 + 11 + 2 + 2 + 24; // Length of Sub-tag 00 + Sub-tag 01 + Sub-tag 02
-            var qrData = `00020101021128${tag28Length}0032${uetr}0111MUCBPKKKRTG0224${accountNumber}5204${merchantCategoryCode}5303${586}5802${'PK'}59${merchantNameLength}${merchantName}60${merchantCityLength}${merchantCity}${crc_tag}`;
+            var qrData = `00020101021128${tag28Length}0032${uetr}0111MUCBPKKKRTG0224${accountNumber}5204${merchantCategoryCode}5303${586}5802${'PK'}59${merchantNameLength}${merchantName}60${merchantCityLength}${merchantCity}62${tag62Length}${'05'}${terminalLabelLength}${terminalLabel}${crc_tag}`;
 
             // Calculate and append CRC16 checksum (Tag 63)
             var crcValue = GenerateCRC(qrData);
@@ -50,6 +56,7 @@
                 <p><strong>Country Code (Tag 58 - PK):</strong> PK</p>
                 <p><strong>Merchant Category Code (Tag 52):</strong> ${merchantCategoryCode}</p>
                 <p><strong>Account Number:</strong> ${accountNumber}</p>
+				<p><strong>Reference Label:</strong> ${terminalLabel}</p>
                 <p><strong>UETR (Tag 28 Sub-tag 00):</strong> ${uetr}</p>
             `;
 
@@ -72,14 +79,16 @@
                 logoWidth: 40,
                 quietZone: 50,
                 quietZoneColor: 'transparent',
-                subTitleFont: 12,
+                subTitleFont: 10,
                 text: qrStringWithCRC.trim(),
 				title: merchantName + " - " + accountNumber.substr(accountNumber.length - 4),
+				subTitle:terminalLabel.trim(),
                 titleBackgroundColor: "white",
                 titleColor: "#000000",
                 titleFont: 18,
                 titleHeight: 0,
                 titleTop: 292,
+				subTitleTop: 305,
                 typeNumber: 5,
                 width: 256,
 				tooltip:true,
@@ -377,6 +386,42 @@
                 alert("Invalid credentials. Please try again.");
             }
         }
+		
+		function generateIbanFromAccountNumber() {
+			debugger;
+			var accountNumber = document.getElementById("accountNumberInput").value.trim();
+			
+			if (accountNumber.length != 24 && accountNumber.length == 16 && !isNaN(accountNumber) )
+			{
+				var MCB_SWIFT = 'MUCB'
+				var PK = 'PK00'
+				var check_sum_digit = ChecksumIBAN( PK + MCB_SWIFT + accountNumber);
+				accountNumber = "PK"+check_sum_digit+ MCB_SWIFT +accountNumber;
+				
+				if ( validateIBAN(accountNumber) )
+					document.getElementById("ibanFromAccountNumber").innerHTML = accountNumber;
+				else
+					document.getElementById("ibanFromAccountNumber").innerHTML = "Please enter 16-digits account number";
+					
+			}
+			else
+				document.getElementById("ibanFromAccountNumber").innerHTML = "Please enter 16-digits account number";
+		}
+		
+		function validateInputIbanNumber() {
+			var iban = document.getElementById("ibanInput").value.trim();
+			
+			if ( iban.length == 24 )
+			{	
+				if ( validateIBAN(iban) )
+					document.getElementById("isValidIBAN").innerHTML = "Valid IBAN " + iban;
+				else
+					document.getElementById("isValidIBAN").innerHTML = "Invalid IBAN " + iban;
+					
+			}
+			else
+				document.getElementById("isValidIBAN").innerHTML = "Please enter 24-digits IBAN";
+		}
 		
 
 		
