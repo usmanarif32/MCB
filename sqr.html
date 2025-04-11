@@ -47,7 +47,7 @@
 				<label for="merchantCategoryCode">Merchant Category Code (Tag 52):</label>
 				<input type="text" id="merchantCategoryCode" placeholder="e.g., 4111" required>
 				
-				<label for="accountNumber">IBAN (24 digits) or Account Number (14 digits):</label>
+				<label for="accountNumber">IBAN (24 digits):</label>
 				<input type="text" id="accountNumber" placeholder="e.g., PKXXMUCBXXXXXXXXXXXXXXXX" maxlength="24" required>
 				<button type="button" onclick="generateQR()">Generate QR Code</button>
 			</form>
@@ -78,6 +78,26 @@
 			<div id="sqrcodeFromIban"></div>
 			</br>
 			<a id="downloadSQRFromIban" download="sqrcode.png">Download QR Code</a>
+		</div>
+		
+		<div class="iban_container">
+			<h2>Generate IBAN</h2>
+			<input type="text" id="accountNumberInput" placeholder="e.g., 123XXXXXXXXXX456" maxlength="16" required>
+			<button type="button" onclick="generateIbanFromAccountNumber()">Generate IBAN</button>
+			</br>
+			</br>
+			<div id="ibanFromAccountNumber" style="word-break: break-all; background: #f1f1f1; padding: 10px; border-radius: 5px;"></div>
+			</br>
+		</div>
+
+		<div class="validate_iban_container">
+			<h2>Validate IBAN</h2>
+			<input type="text" id="ibanInput" placeholder="e.g., PKXXMUCBXXXXXXXXXXXXXXXX" maxlength="24" required>
+			<button type="button" onclick="validateInputIbanNumber()">Validate IBAN</button>
+			</br>
+			</br>
+			<div id="isValidIBAN" style="word-break: break-all; background: #f1f1f1; padding: 10px; border-radius: 5px;"></div>
+			</br>
 		</div>
 	
 	</div>

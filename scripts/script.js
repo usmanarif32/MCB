@@ -2,21 +2,9 @@
             var merchantName = document.getElementById("merchantName").value;
             var merchantCity = document.getElementById("merchantCity").value;
             var merchantCategoryCode = document.getElementById("merchantCategoryCode").value;
-            var accountNumber = document.getElementById("accountNumber").value.trim();
+            var accountNumber = document.getElementById("accountNumber").value;
 			var merchantNameLength = merchantName.length;
 			var merchantCityLength = merchantCity.length;
-			
-			if (accountNumber.length != 24 && accountNumber.length == 16)
-			{
-				var MCB_SWIFT = 'MUCB'
-				var PK = 'PK00'
-				var check_sum_digit = ChecksumIBAN( PK + MCB_SWIFT + accountNumber);
-				//if ( validateIBAN( 'PK' + check_sum_digit + MCB_SWIFT + IBAN) )
-					accountNumber = "PK"+check_sum_digit+ MCB_SWIFT +accountNumber;
-			}
-			
-			if ( validateIBAN (accountNumber) && merchantCategoryCode.length==4 && merchantNameLength >0)
-			{
 			
 			if( merchantNameLength < 10)
 				merchantNameLength = '0' + merchantNameLength;
@@ -74,7 +62,7 @@
                 quietZoneColor: 'transparent',
                 subTitleFont: 12,
                 text: qrStringWithCRC.trim(),
-				title: merchantName + " - " + accountNumber.substr(accountNumber.length - 4),
+				title: merchantName + " - " + accountNumber,
                 titleBackgroundColor: "white",
                 titleColor: "#000000",
                 titleFont: 18,
@@ -99,8 +87,226 @@
                 downloadButton.href = qrImage;
                 downloadButton.style.display = 'inline-block'; // Show the download button
             }, 300);  // Delay to ensure the QR code is generated
+        }
+
+		
+		//CRC Used for generating String
+		function GenerateCRC(qrData) {
+			var crcode = crc16(qrData).toString(16).toUpperCase();
+			while (crcode.length < 4) {
+				crcode = "0" + crcode;
+			}
+			//var output = qrData + crcode;
+			return crcode;
 		}
-    }
+						
+		function crc16(s) {
+			var crc = 0xFFFF;
+			var polynomial = 0x1021;
+			var bytes = [];
+
+			for (var i = 0; i < s.length; ++i) {
+				var code = s.charCodeAt(i);
+
+				bytes = bytes.concat([code]);
+			}
+
+			//converting the string into binary array.
+			bytes.forEach(b => {
+
+				for (let a = 0; a < 8; a++) {
+					var bit = (((b >> (7 - a)) & 1) === 1);
+					var c15 = (((crc >> 15) & 1) === 1);
+					crc <<= 1;
+					if (c15 ^ bit) crc ^= polynomial;
+				}
+			});
+			crc &= 0xFFFF;
+			console.log(crc);
+			return crc
+		}
+
+        // Function to generate a 32-digit UETR
+        function generateUETR() {
+			let uetr = '';
+			uetr = self.crypto.randomUUID().replace(/-/g, '').substring(0, 32);
+		return uetr;
+		}
+
+		function generateQRFromString()	{
+			// Clear any previous QR codes
+			var MERCHANT_STATIC_QR_STRING = document.getElementById("qrStringInput").value.trim();
+            document.getElementById("qrcodeFromString").innerHTML = "";
+			
+			let merchantNameLength = MERCHANT_STATIC_QR_STRING.substring(118,120);
+			let merchantName = MERCHANT_STATIC_QR_STRING.substring(120,120 + parseInt(merchantNameLength));
+			let accountNumber = MERCHANT_STATIC_QR_STRING.substring(71,71 + 24);
+			
+			let options = {
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H,
+                height: 256,
+                logo: "images/mcb.png",
+                logoBackgroundColor: '#ffffff',
+                logoBackgroundTransparent: false,
+                logoHeight: 40,
+                logoWidth: 40,
+                quietZone: 50,
+                quietZoneColor: 'transparent',
+                subTitleFont: 12,
+                text: MERCHANT_STATIC_QR_STRING,
+				title: merchantName + " - " + accountNumber,
+                titleBackgroundColor: "white",
+                titleColor: "#000000",
+                titleFont: 18,
+                titleHeight: 0,
+                titleTop: 292,
+                typeNumber: 5,
+                width: 256,
+				tooltip:true,
+				drawer:'canvas'
+            };
+			
+			 var qrcodeFromString = new QRCode(document.getElementById("qrcodeFromString"),options);
+			
+            setTimeout(function() {
+                var qrCanvas = document.querySelector('#qrcodeFromString canvas');
+                var qrImage = qrCanvas.toDataURL('image/png');
+
+                var downloadButton = document.getElementById("downloadQRFromString");
+                downloadButton.href = qrImage;
+                downloadButton.style.display = 'inline-block';
+            }, 300); 
+			
+		}
+		
+		function generateSQRFromIban()	{
+			// Clear any previous QR codes
+			var IBAN = document.getElementById("sqrIbanInput").value.trim();
+			var MERCHANT_STATIC_SQR_STRING = "0002020102110202000424" + IBAN + "1004"
+			var CRC = GenerateCRC(MERCHANT_STATIC_SQR_STRING);
+			MERCHANT_STATIC_SQR_STRING = MERCHANT_STATIC_SQR_STRING + CRC;
+			
+            document.getElementById("sqrcodeFromIban").innerHTML = "";
+			
+			let options = {
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H,
+                height: 256,
+                logo: "images/mcb.png",
+                logoBackgroundColor: '#ffffff',
+                logoBackgroundTransparent: false,
+                logoHeight: 40,
+                logoWidth: 40,
+                quietZone: 50,
+                quietZoneColor: 'transparent',
+                text: MERCHANT_STATIC_SQR_STRING,
+				title: IBAN,
+                titleBackgroundColor: "white",
+                titleColor: "#000000",
+                titleFont: 18,
+                titleHeight: 0,
+                titleTop: 292,
+                typeNumber: 5,
+                width: 256,
+				tooltip:true,
+				drawer:'canvas'
+            };
+			
+			 var sqrcodeFromIban = new QRCode(document.getElementById("sqrcodeFromIban"),options);
+			
+            setTimeout(function() {
+                var qrCanvas = document.querySelector('#sqrcodeFromIban canvas');
+                var qrImage = qrCanvas.toDataURL('image/png');
+
+                var downloadButton = document.getElementById("downloadSQRFromIban");
+                downloadButton.href = qrImage;
+                downloadButton.style.display = 'inline-block';
+            }, 300); 
+			
+		}
+		
+		// Load the JSON file with the cities
+		fetch('cities.json')
+		  .then(response => {
+			if (!response.ok) {
+			  throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			return response.text(); // Read response as text
+		  })
+		  .then(text => {
+			//console.log('Response text:', text); // Log the raw text
+			try {
+			  const data = JSON.parse(text); // Parse the JSON manually
+			  //console.log('Parsed JSON data:', data); // Log the parsed data
+			  const citiesDropdown = document.getElementById('merchantCity');
+			  
+			  const cities = data.cities;
+				
+			if ( citiesDropdown )
+			  cities.forEach(city => {
+				const option = document.createElement('option');
+				option.value = city;
+				option.textContent = city;
+				citiesDropdown.appendChild(option);
+			  });
+			} catch (error) {
+			  console.error('JSON parsing error:', error);
+			}
+		  })
+		  .catch(error => console.error('Error loading cities:', error)); 
+
+
+        function login() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+			
+            // Simple validation (in real scenarios, you would check this against a server-side database)
+	    if (username === "MCB" && password === "live") { 
+                document.getElementById("loginForm").style.display = "none";
+                document.getElementById("qrFormContainer").style.display = "block";
+            } else {
+                alert("Invalid credentials. Please try again.");
+            }
+        }
+		
+		function generateIbanFromAccountNumber() {
+			var accountNumber = document.getElementById("accountNumberInput").value.trim();
+			
+			if (accountNumber.length != 24 && accountNumber.length == 16 && !isNaN(accountNumber) )
+			{
+				var MCB_SWIFT = 'MUCB'
+				var PK = 'PK00'
+				var check_sum_digit = ChecksumIBAN( PK + MCB_SWIFT + accountNumber);
+				accountNumber = "PK"+check_sum_digit+ MCB_SWIFT +accountNumber;
+				
+				if ( validateIBAN(accountNumber) )
+					document.getElementById("ibanFromAccountNumber").innerHTML = accountNumber;
+				else
+					document.getElementById("ibanFromAccountNumber").innerHTML = "Please enter 16-digits account number";
+					
+			}
+			else
+				document.getElementById("ibanFromAccountNumber").innerHTML = "Please enter 16-digits account number";
+		}
+		
+		function validateInputIbanNumber() {
+			var iban = document.getElementById("ibanInput").value.trim();
+			
+			if ( iban.length == 24 )
+			{	
+				if ( validateIBAN(iban) )
+					document.getElementById("isValidIBAN").innerHTML = "Valid IBAN " + iban;
+				else
+					document.getElementById("isValidIBAN").innerHTML = "Invalid IBAN " + iban;
+					
+			}
+			else
+				document.getElementById("isValidIBAN").innerHTML = "Please enter 24-digits IBAN";
+		}
+		
 		
 		function ChecksumIBAN(iban)
 		{
@@ -195,189 +401,6 @@
 
 			return parseInt(modulo(newIban, 97), 10) === 1;
 		}
-		
-		//CRC Used for generating String
-		function GenerateCRC(qrData) {
-			var crcode = crc16(qrData).toString(16).toUpperCase();
-			while (crcode.length < 4) {
-				crcode = "0" + crcode;
-			}
-			//var output = qrData + crcode;
-			return crcode;
-		}
-						
-		function crc16(s) {
-			var crc = 0xFFFF;
-			var polynomial = 0x1021;
-			var bytes = [];
-
-			for (var i = 0; i < s.length; ++i) {
-				var code = s.charCodeAt(i);
-
-				bytes = bytes.concat([code]);
-			}
-
-			//converting the string into binary array.
-			bytes.forEach(b => {
-
-				for (let a = 0; a < 8; a++) {
-					var bit = (((b >> (7 - a)) & 1) === 1);
-					var c15 = (((crc >> 15) & 1) === 1);
-					crc <<= 1;
-					if (c15 ^ bit) crc ^= polynomial;
-				}
-			});
-			crc &= 0xFFFF;
-			console.log(crc);
-			return crc
-		}
-
-        // Function to generate a 32-digit UETR
-        function generateUETR() {
-			let uetr = '';
-			uetr = self.crypto.randomUUID().replace(/-/g, '').substring(0, 32);
-		return uetr;
-		}
-
-		function generateQRFromString()	{
-			// Clear any previous QR codes
-			var MERCHANT_STATIC_QR_STRING = document.getElementById("qrStringInput").value.trim();
-            document.getElementById("qrcodeFromString").innerHTML = "";
-			
-			let merchantNameLength = MERCHANT_STATIC_QR_STRING.substring(118,120);
-			let merchantName = MERCHANT_STATIC_QR_STRING.substring(120,120 + parseInt(merchantNameLength));
-			let accountNumber = MERCHANT_STATIC_QR_STRING.substring(71,71 + 24);
-			
-			let options = {
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H,
-                height: 256,
-                logo: "images/mcb.png",
-                logoBackgroundColor: '#ffffff',
-                logoBackgroundTransparent: false,
-                logoHeight: 40,
-                logoWidth: 40,
-                quietZone: 50,
-                quietZoneColor: 'transparent',
-                subTitleFont: 12,
-                text: MERCHANT_STATIC_QR_STRING,
-				title: merchantName + " - " + accountNumber.substr(accountNumber.length - 4),
-                titleBackgroundColor: "white",
-                titleColor: "#000000",
-                titleFont: 18,
-                titleHeight: 0,
-                titleTop: 292,
-                typeNumber: 5,
-                width: 256,
-				tooltip:true,
-				drawer:'canvas'
-            };
-			
-			 var qrcodeFromString = new QRCode(document.getElementById("qrcodeFromString"),options);
-			
-            setTimeout(function() {
-                var qrCanvas = document.querySelector('#qrcodeFromString canvas');
-                var qrImage = qrCanvas.toDataURL('image/png');
-
-                var downloadButton = document.getElementById("downloadQRFromString");
-                downloadButton.href = qrImage;
-                downloadButton.style.display = 'inline-block';
-            }, 300); 
-			
-		}
-		
-		function generateSQRFromIban()	{
-			// Clear any previous QR codes
-			var IBAN = document.getElementById("sqrIbanInput").value.trim();
-			var MERCHANT_STATIC_SQR_STRING = "0002020102110202000424" + IBAN + "1004"
-			var CRC = GenerateCRC(MERCHANT_STATIC_SQR_STRING);
-			MERCHANT_STATIC_SQR_STRING = MERCHANT_STATIC_SQR_STRING + CRC;
-			
-            document.getElementById("sqrcodeFromIban").innerHTML = "";
-			
-			let options = {
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H,
-                height: 256,
-                logo: "images/mcb.png",
-                logoBackgroundColor: '#ffffff',
-                logoBackgroundTransparent: false,
-                logoHeight: 40,
-                logoWidth: 40,
-                quietZone: 50,
-                quietZoneColor: 'transparent',
-                text: MERCHANT_STATIC_SQR_STRING,
-				title: IBAN,
-                titleBackgroundColor: "white",
-                titleColor: "#000000",
-                titleFont: 18,
-                titleHeight: 0,
-                titleTop: 292,
-                typeNumber: 5,
-                width: 256,
-				tooltip:true,
-				drawer:'canvas'
-            };
-			
-			 var sqrcodeFromIban = new QRCode(document.getElementById("sqrcodeFromIban"),options);
-			
-            setTimeout(function() {
-                var qrCanvas = document.querySelector('#sqrcodeFromIban canvas');
-                var qrImage = qrCanvas.toDataURL('image/png');
-
-                var downloadButton = document.getElementById("downloadSQRFromIban");
-                downloadButton.href = qrImage;
-                downloadButton.style.display = 'inline-block';
-            }, 300); 
-			
-		}
-		
-		// Load the JSON file with the cities
-		fetch('../json/cities.json')
-		  .then(response => {
-			if (!response.ok) {
-			  throw new Error(`HTTP error! status: ${response.status}`);
-			}
-			return response.text(); // Read response as text
-		  })
-		  .then(text => {
-			//console.log('Response text:', text); // Log the raw text
-			try {
-			  const data = JSON.parse(text); // Parse the JSON manually
-			  //console.log('Parsed JSON data:', data); // Log the parsed data
-			  const citiesDropdown = document.getElementById('merchantCity');
-			  
-			  const cities = data.cities;
-				
-			if ( citiesDropdown )
-			  cities.forEach(city => {
-				const option = document.createElement('option');
-				option.value = city;
-				option.textContent = city;
-				citiesDropdown.appendChild(option);
-			  });
-			} catch (error) {
-			  console.error('JSON parsing error:', error);
-			}
-		  })
-		  .catch(error => console.error('Error loading cities:', error)); 
-
-
-        function login() {
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-			
-            // Simple validation (in real scenarios, you would check this against a server-side database)
-	    if (username === "MCB" && password === "live") { 
-                document.getElementById("loginForm").style.display = "none";
-                document.getElementById("qrFormContainer").style.display = "block";
-            } else {
-                alert("Invalid credentials. Please try again.");
-            }
-        }
-		
 
 		
 
