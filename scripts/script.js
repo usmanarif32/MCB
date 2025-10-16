@@ -62,7 +62,7 @@
                 quietZoneColor: 'transparent',
                 subTitleFont: 12,
                 text: qrStringWithCRC.trim(),
-				title: merchantName + " - " + accountNumber,
+				title: merchantName + " - " + accountNumber.slice(-4),
                 titleBackgroundColor: "white",
                 titleColor: "#000000",
                 titleFont: 18,
@@ -156,7 +156,7 @@
                 quietZoneColor: 'transparent',
                 subTitleFont: 12,
                 text: MERCHANT_STATIC_QR_STRING,
-				title: merchantName + " - " + accountNumber,
+				title: merchantName + " - " + accountNumber.slice(-4),
                 titleBackgroundColor: "white",
                 titleColor: "#000000",
                 titleFont: 18,
@@ -184,6 +184,7 @@
 		function generateSQRFromIban()	{
 			// Clear any previous QR codes
 			var IBAN = document.getElementById("sqrIbanInput").value.trim();
+			var sqrActTitle = document.getElementById("sqrActTitle").value.trim();
 			var MERCHANT_STATIC_SQR_STRING = "0002020102110202000424" + IBAN + "1004"
 			var CRC = GenerateCRC(MERCHANT_STATIC_SQR_STRING);
 			MERCHANT_STATIC_SQR_STRING = MERCHANT_STATIC_SQR_STRING + CRC;
@@ -203,7 +204,7 @@
                 quietZone: 50,
                 quietZoneColor: 'transparent',
                 text: MERCHANT_STATIC_SQR_STRING,
-				title: IBAN,
+				title: sqrActTitle + " - " + IBAN.slice(-4),
                 titleBackgroundColor: "white",
                 titleColor: "#000000",
                 titleFont: 18,
@@ -401,6 +402,5 @@
 
 			return parseInt(modulo(newIban, 97), 10) === 1;
 		}
-
 		
 

@@ -127,7 +127,8 @@ const MERCHANTS_STATIC_QR_STRING_GLB = [];
 		const MERCHANT_STATIC_QR_STRING_FROM_CSV = [];
 		
 		document.addEventListener('DOMContentLoaded', () => {
-			fetch('../data/qrString.csv')
+			fetch('../data/bulk_raast_01_500_qr_string.csv')
+			//fetch('../data/qrString.csv')
 			  .then(response => response.text())
 			  .then(csvText => {
 				// Parse CSV data

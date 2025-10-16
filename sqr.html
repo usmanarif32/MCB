@@ -72,6 +72,7 @@
 		
 		<div class="sqr_container">
 			<h2>P2P Static QR</h2>
+			<input type="text" id="sqrActTitle" placeholder="e.g., Account Title" required>
 			<input type="text" id="sqrIbanInput" placeholder="e.g., PKXXMUCBXXXXXXXXXXXXXXXX" maxlength="24" required>
 			<button type="button" onclick="generateSQRFromIban()">Generate QR Code</button>
 			</br>
@@ -79,7 +80,7 @@
 			</br>
 			<a id="downloadSQRFromIban" download="sqrcode.png">Download QR Code</a>
 		</div>
-		
+
 		<div class="iban_container">
 			<h2>Generate IBAN</h2>
 			<input type="text" id="accountNumberInput" placeholder="e.g., 123XXXXXXXXXX456" maxlength="16" required>

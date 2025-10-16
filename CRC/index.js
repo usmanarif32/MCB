@@ -259,7 +259,9 @@ var crc_tag = "6304"
 
 const results = [];
 //fs.createReadStream('qrString.csv')
-fs.createReadStream('data/newStrings.csv')
+//fs.createReadStream('data/newStrings.csv')
+//fs.createReadStream('data/bulk_raast_01_500.csv')
+fs.createReadStream('data/PROD_MERCHANT_16_OCT_25.csv')
   .pipe(csv())
   .on('data', (data) => results.push(data))
   .on('end', () => {
