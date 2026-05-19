@@ -88,9 +88,21 @@
             text-decoration: none;
             border-radius: 5px;
         }
-		#bulkQrContainer {
-		  border: 2px solid black;   /* thickness, style, color */
-		  padding: 10px;             /* space inside the border */
-		  margin: 10px;              /* space outside the border */
-		  border-radius: 5px;        /* optional: rounded corners */
-		}
+	#bulkQrContainer {
+
+		height: 300px;          /* Fixed container height */
+		overflow-y: auto;       /* Vertical scrollbar */
+		overflow-x: hidden;     /* Hide horizontal scrollbar */
+
+		border: 1px solid #ccc;
+		padding: 10px;
+		margin-top: 15px;
+
+		display: flex;
+		flex-wrap: wrap;
+		gap: 15px;
+
+		align-content: flex-start;
+	}
+
+
