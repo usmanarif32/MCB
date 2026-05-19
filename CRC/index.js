@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto';
 import fs from 'fs';
 import csv from 'csv-parser';
 
-console.log("CRC!");
+//console.log("CRC!");
 
 var qrData 		= "00020101021128790032804906a5ddda49b6ba3d452a9d674a350111MUCBPKKKRTG0224PK98MUCB11551874410004045204564153035865802PK5905SHANI6007Karachi6304";
 
@@ -237,9 +237,9 @@ var MERCHANT_DATA = [
 ]
 
 var check_digits_iban = ChecksumIBAN("PK00MUCB0959088851011896");
-console.log("ChecksumIBAN " + 	ChecksumIBAN("PK00MUCB0959088851011896") );
+//console.log("ChecksumIBAN " + 	ChecksumIBAN("PK00MUCB0959088851011896") );
 //console.log("IBANokay " + 	IBANokay("PK48MUCB1469424781008334") );
-console.log("IBAN Validation " + validateIBAN("PK" + check_digits_iban + "MUCB0959088851011896") );
+//console.log("IBAN Validation " + validateIBAN("PK" + check_digits_iban + "MUCB0959088851011896") );
 
 // Formate string
 
@@ -261,12 +261,25 @@ const results = [];
 //fs.createReadStream('qrString.csv')
 //fs.createReadStream('data/newStrings.csv')
 //fs.createReadStream('data/bulk_raast_01_500.csv')
-fs.createReadStream('data/PROD_MERCHANT_16_OCT_25.csv')
+//fs.createReadStream('data/PROD_MERCHANT_16_OCT_25.csv')
+//fs.createReadStream('data/North_QR.csv')
+//fs.createReadStream('data/South_QR.csv')
+//fs.createReadStream('data/Central_QR.csv')
+//fs.createReadStream('data/u_North_QR.csv')
+//fs.createReadStream('data/u_South_QR.csv')
+//fs.createReadStream('data/u_Central_QR.csv')
+//fs.createReadStream('data/u_Privilage_QR.csv')
+//fs.createReadStream('data/d_North_QR.csv')
+//fs.createReadStream('data/d_South_QR.csv')
+//fs.createReadStream('data/d_Central_QR.csv')
+//fs.createReadStream('data/d_Privilage_QR.csv')
+//fs.createReadStream('data/QR_RAAST_Self_Employed.csv')
+fs.createReadStream('data/cattle_and_farms_qr.csv')
   .pipe(csv())
   .on('data', (data) => results.push(data))
   .on('end', () => {
 	    //console.log(results);
-		
+	console.log( 'IBAN,MCC,CITY,BUSINESS_NAME,QR_STRING' );	
 	for(let i = 0; i < results.length; i++) {
 		let object = results[i];
 		/*console.log(object.Account_Number);
@@ -276,6 +289,7 @@ fs.createReadStream('data/PROD_MERCHANT_16_OCT_25.csv')
 		
 		IBAN  = object.ACCOUNT_NUMBER.trim();
 		merchant_business_name = object.BUSINESS_NAME.trim();
+		//merchant_business_name = merchant_business_name.length > 32 ? merchant_business_name.substring(0, 32) : merchant_business_name;
 		merchant_business_name_lenght = merchant_business_name.length;
 		if(merchant_business_name_lenght < 10)
 			merchant_business_name_lenght = '0' + merchant_business_name_lenght;
@@ -300,7 +314,8 @@ fs.createReadStream('data/PROD_MERCHANT_16_OCT_25.csv')
 		
 		var MCC_tag_plus_value  = MCC_tag + object.MCC.trim();
 		var QR_STRING = baseString_tag28 + uetr + Bic_Code + IBAN + MCC_tag_plus_value + currency_country + merchant_business_name_lenght + merchant_business_name + city_tag + city_length + city + crc_tag;
-		console.log( GenerateCRC(QR_STRING) );
+		//console.log(IBAN + ',' + object.MCC.trim() + ',' + city + ',' + merchant_business_name + ',' + GenerateCRC(QR_STRING) );
+		console.log(GenerateCRC(QR_STRING) ); // only strings
 		
 	}
 	

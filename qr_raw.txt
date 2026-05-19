@@ -1,4 +1,13 @@
-PK23MUCB1469257021004229
+ACCOUNT_NUMBER	MCC	CITY	BUSINESS_NAME
+
+
+node index.js > North_QR_v.csv
+node index.js > South_QR_v.csv
+node index.js > Central_QR_v.csv
+
+node index.js > North_QR.csv
+node index.js > South_QR.csv
+node index.js > Central_QR.csv
 
 
 

@@ -127,8 +127,72 @@ const MERCHANTS_STATIC_QR_STRING_GLB = [];
 		const MERCHANT_STATIC_QR_STRING_FROM_CSV = [];
 		
 		document.addEventListener('DOMContentLoaded', () => {
-			fetch('../data/bulk_raast_01_500_qr_string.csv')
-			//fetch('../data/qrString.csv')
+			//fetch('../data/bulk_raast_01_500_qr_string.csv')
+			//fetch('../data/North_QR/North_QR_1.csv')
+			//fetch('../data/North_QR/North_QR_2.csv')
+			//fetch('../data/North_QR/North_QR_3.csv')
+			//fetch('../data/North_QR/North_QR_4.csv')
+			//fetch('../data/North_QR/North_QR_5.csv')
+			//fetch('../data/South_QR/South.csv')
+			//fetch('../data/South_QR/South_QR_1.csv')
+			//fetch('../data/South_QR/South_QR_2.csv')
+			//fetch('../data/South_QR/South_QR_3.csv')l
+			//fetch('../data/South_QR/South_QR_4.csv')
+			//fetch('../data/South_QR/South_QR_5.csv')
+			//fetch('../data/South_QR/South_QR_6.csv')
+			//fetch('../data/South_QR/South_QR_7.csv')
+			//fetch('../data/South_QR/South_QR_8.csv')
+			//fetch('../data/South_QR/South_QR_9.csv')
+			//fetch('../data/South_QR/South_QR_10.csv')
+			//fetch('../data/South_QR/South_QR_11.csv')
+			//fetch('../data/North_QR/North_QR_1.csv')
+			//fetch('../data/North_QR/North_QR_2.csv')
+			//fetch('../data/North_QR/North_QR_3.csv')
+			//fetch('../data/North_QR/North_QR_4.csv')
+			//fetch('../data/North_QR/North_QR_5.csv')
+			//fetch('../data/South_QR/Central.csv')
+			//fetch('../data/Central_QR/Central_QR_1.csv')
+			//fetch('../data/Central_QR/Central_QR_2.csv')
+			//fetch('../data/Central_QR/Central_QR_3.csv')
+			//fetch('../data/Central_QR/Central_QR_4.csv')
+			//fetch('../data/Central_QR/Central_QR_5.csv')
+			//fetch('../data/Central_QR/Central_QR_6.csv')
+			//fetch('../data/Central_QR/Central_QR_7.csv')
+			//fetch('../data/Central_QR/Central_QR_8.csv')
+			//fetch('../data/Central_QR/Central_QR_9.csv')
+			//fetch('../data/Central_QR/Central_QR_10.csv')
+			//fetch('../data/Central_QR/Central_QR_11.csv')
+			//fetch('../data/Central_QR/Central_QR_12.csv')
+			//fetch('../data/Central_QR/Central_QR_13.csv')
+			//fetch('../data/Central_QR/Central_QR_14.csv')
+			//fetch('../data/Central_QR/Central_QR_15.csv')
+			//fetch('../data/Central_QR/Central_QR_16.csv')
+			//fetch('../data/Central_QR/Central_QR_17.csv')
+			//fetch('../data/Central_QR/Central_QR_18.csv')
+			//fetch('../data/Central_QR/Central_QR_19.csv')
+			//fetch('../data/Central_QR/Central_QR_20.csv')
+			//fetch('../data/Central_QR/Central_QR_21.csv')
+			//fetch('../data/Central_QR/Central_QR_22.csv')
+			//fetch('../data/Central_QR/Central_QR_23.csv')
+			//fetch('../data/Central_QR/Central_QR_24.csv')
+			//fetch('../data/Central_QR/Central_QR_25.csv')
+			//fetch('../data/Central_QR/Central_QR_26.csv')
+			//fetch('../data/Central_QR/Central_QR_27.csv')
+			//fetch('../data/Central_QR/Central_QR_28.csv')
+			//fetch('../data/Central_QR/Central_QR_29.csv')
+			//fetch('../data/Central_QR/Central_QR_30.csv')
+			//fetch('../data/Central_QR/Central_QR_31.csv')
+			//fetch('../data/Central_QR/Central_QR_32.csv')
+			//fetch('../data/Central_QR/Central_QR_33.csv')
+			//fetch('../data/u_QR/u_North_QR.csv')
+			//fetch('../data/u_QR/u_South_QR.csv')
+			//fetch('../data/u_QR/u_Central_QR.csv')
+			//fetch('../data/u_QR/u_Privilage_QR.csv')
+			//fetch('../data/d_QR/d_North_QR.csv')
+			//fetch('../data/d_QR/d_South_QR.csv')
+			//fetch('../data/d_QR/d_Central_QR.csv')
+			//fetch('../data/d_QR/d_Privilage_QR.csv')
+			fetch('../data/qrString.csv')
 			  .then(response => response.text())
 			  .then(csvText => {
 				// Parse CSV data
@@ -169,7 +233,7 @@ const MERCHANTS_STATIC_QR_STRING_GLB = [];
 
 								let index = i + 1;
 								let qrCodeDiv = document.createElement('div');
-								qrCodeDiv.id = 'qrcode' + index + '_' + merchantName;
+								qrCodeDiv.id = 'qrcode' + index + '_' + merchantName + '-' + merchantAccount;
 								qrCodeDiv.crossorigin="anonymous";
 								new QRCode(qrCodeDiv, options);
 
