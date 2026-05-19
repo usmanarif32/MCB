@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="css/styles.css">
     <script src="scripts/easy.qrcode.min.js"></script>
 	<script src="scripts/script.js"></script>
+	<script src="scripts/papaparse.min.js"></script>
 </head>
 <body>
 
@@ -28,7 +29,7 @@
 <!--style="display:none;"-->
 	<div class="container" id="qrFormContainer" style="display:none;">
 
-		<div class="container">
+		<div class="container" style="display:none;">
 		<h1>MCB Merchants QR</h1>
 			<iframe src="prodMerchantsQR/prodMerchantsQR.html" width="600" height="400" title="Embedded Page"></iframe>
 		</div>
@@ -69,6 +70,22 @@
 			</br>
 			<a id="downloadQRFromString" download="qrcodefs.png">Download QR Code</a>
 		</div>
+		
+		<h2>Bulk QR Generation</h2>
+
+		<input type="file" id="csvFile" accept=".csv">
+		<button type="button" onclick="processCSV()">Generate Bulk QR</button>
+		<div id="bulkQrContainer"></div>
+		<button
+		type="button"
+		id="downloadAllBtn"
+		onclick="downloadBulkQRs()"
+		style="display:none;"
+		>
+		Download All QRs
+		</button>
+		
+		</br>
 		
 		<div class="sqr_container">
 			<h2>P2P Static QR</h2>

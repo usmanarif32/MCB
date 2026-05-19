@@ -88,3 +88,9 @@
             text-decoration: none;
             border-radius: 5px;
         }
+		#bulkQrContainer {
+		  border: 2px solid black;   /* thickness, style, color */
+		  padding: 10px;             /* space inside the border */
+		  margin: 10px;              /* space outside the border */
+		  border-radius: 5px;        /* optional: rounded corners */
+		}

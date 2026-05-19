@@ -403,4 +403,175 @@
 			return parseInt(modulo(newIban, 97), 10) === 1;
 		}
 		
+	function processCSV() {
+
+    const fileInput = document.getElementById('csvFile');
+
+    if (!fileInput.files.length) {
+        alert("Please select a CSV file");
+        return;
+    }
+
+    Papa.parse(fileInput.files[0], {
+			header: true,
+			skipEmptyLines: true,
+
+			complete: function(results) {
+
+				const data = results.data;
+
+				document.getElementById("bulkQrContainer").innerHTML = "";
+
+				data.forEach((row, index) => {
+
+					const accountNumber = row.ACCOUNT_NUMBER?.trim();
+					const merchantCategoryCode = row.MCC?.trim();
+					const merchantCity = row.CITY?.trim();
+					const merchantName = row.BUSINESS_NAME?.trim();
+
+					if (!accountNumber || !merchantCategoryCode || !merchantCity || !merchantName) {
+						console.log("Skipping invalid row", row);
+						return;
+					}
+
+					generateBulkQR(
+						merchantName,
+						merchantCity,
+						merchantCategoryCode,
+						accountNumber,
+						index
+					);
+				});
+			}
+		});
+	}
+	
+	function generateBulkQR(
+    merchantName,
+    merchantCity,
+    merchantCategoryCode,
+    accountNumber,
+    index
+) 
+{
+    var merchantNameLength = merchantName.length;
+    var merchantCityLength = merchantCity.length;
+
+    if (merchantNameLength < 10)
+        merchantNameLength = '0' + merchantNameLength;
+
+    if (merchantCityLength < 10)
+        merchantCityLength = '0' + merchantCityLength;
+
+    var uetr = generateUETR();
+
+    var crc_tag = "6304";
+
+    var tag28Length =
+        2 + 2 + 32 +
+        2 + 2 + 11 +
+        2 + 2 + 24;
+
+    var qrData =
+        `00020101021128${tag28Length}` +
+        `0032${uetr}` +
+        `0111MUCBPKKKRTG` +
+        `0224${accountNumber}` +
+        `5204${merchantCategoryCode}` +
+        `5303586` +
+        `5802PK` +
+        `59${merchantNameLength}${merchantName}` +
+        `60${merchantCityLength}${merchantCity}` +
+        `${crc_tag}`;
+
+    var crcValue = GenerateCRC(qrData);
+
+    var qrStringWithCRC = qrData + crcValue;
+
+    // Generate QR
+    let options = {
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H,
+                height: 256,
+                logo: "images/mcb.png",
+                logoBackgroundColor: '#ffffff',
+                logoBackgroundTransparent: false,
+                logoHeight: 40,
+                logoWidth: 40,
+                quietZone: 50,
+                quietZoneColor: 'transparent',
+                text: qrStringWithCRC,
+				title: merchantName+ " - " + accountNumber.slice(-4),
+                titleBackgroundColor: "white",
+                titleColor: "#000000",
+                titleFont: 18,
+                titleHeight: 0,
+                titleTop: 292,
+                typeNumber: 5,
+                width: 256,
+				tooltip:true,
+				drawer:'canvas'
+            };
+	
+	//let index = i + 1;
+	let qrCodeDiv = document.createElement('div');
+	qrCodeDiv.id = 'bqrcode' + index + '_' + merchantName + '-' + accountNumber;
+	qrCodeDiv.crossorigin="anonymous";
+	new QRCode(qrCodeDiv, options);
+
+	let bulkQrContainer = document.getElementById("bulkQrContainer");
+	bulkQrContainer.appendChild(qrCodeDiv);
+
+    // Prepare Download
+    setTimeout(() => {
+
+        const qrCanvas =
+            document.querySelector(`#qr_${index} canvas`);
+
+        if (qrCanvas) {
+
+            const qrImage =
+                qrCanvas.toDataURL('image/png');
+
+            const downloadButton =
+                document.getElementById(`download_${index}`);
+
+            downloadButton.href = qrImage;
+        }
+
+    }, 300);
+	
+	document.getElementById("downloadAllBtn").style.display = "block"
+}
+
+        function downloadBulkQRs() {
+            const qrCodes = document.querySelectorAll('[id^=bqrcode]:not([style*="display: none"])');
+            qrCodes.forEach((qrCodeDiv, index) => {
+                let canvas = qrCodeDiv.querySelector('canvas');
+				let merchantName = qrCodeDiv.id.split("_")[1];
+                if (canvas) {
+                    let dataURL = getCanvasDataURL(canvas);
+					setTimeout(
+					() => {
+                    downloadImage(dataURL, `${merchantName}.png`);
+					},
+     200
+  );
+                }
+            });
+        }
+		
+	function getCanvasDataURL(canvas) {
+           return canvas.toDataURL('image/png');
+       }
+		
+	function downloadImage(dataURL, filename) {
+           let link = document.createElement('a');
+           link.href = dataURL;
+           link.download = filename;
+           document.body.appendChild(link);
+           link.click();
+           document.body.removeChild(link);
+       }
 
